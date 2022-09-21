@@ -1,12 +1,19 @@
 import time
+import os
 
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from pydantic import BaseModel
 from transformers import AutoModelForCausalLM, pipeline
 import uvicorn
 
-# init RESTful
+# init RESTful, load .env
 app = FastAPI()
+load_dotenv()
+
+# constants
+SRVREST_CUDA_DEV = int(os.environ["SRVREST_CUDA_DEV"])
+SRVREST_MODEL = int(os.environ["SRVREST_MODEL"])
 
 # global declarations
 model_to_load = [
@@ -15,7 +22,7 @@ model_to_load = [
     "EleutherAI/gpt-neo-1.3B",
     "EleutherAI/gpt-neo-2.7B",  # too memory intensive for my GTX 1070
     "EleutherAI/gpt-j-6B",
-][1]
+][SRVREST_MODEL]
 gpt_generator = None
 model = None
 
@@ -28,15 +35,18 @@ def load_model():
 
     model = AutoModelForCausalLM.from_pretrained(
         model_to_load, low_cpu_mem_usage=True
-    ).to("cuda")
-
-    wall = time.time() - start
-    print(f"Model loadtime wall clock: {wall / 60:1.0f}min {wall % 60:3.1f}s")
+    ).to("cpu" if SRVREST_CUDA_DEV == -1 else "cuda")
 
     gpt_generator = pipeline(
         # CUDA device n to use (-1 is cpu): device=n
-        "text-generation", model=model, tokenizer=model_to_load, device=0
+        "text-generation",
+        model=model,
+        tokenizer=model_to_load,
+        device=SRVREST_CUDA_DEV,
     )
+
+    wall = time.time() - start
+    print(f"Model loadtime wall clock: {wall / 60:1.0f}min {wall % 60:3.1f}s")
 
 
 def evaluate(args):
@@ -86,6 +96,7 @@ class Input(BaseModel):
             The number of independently computed returned sequences for
             each element in the batch.
     """
+
     text: str
     do_sample: bool = False
     top_p: int = 100  # Seems to be of type int these days.

@@ -37,22 +37,11 @@ A few figures to compare
 #### Generation Requests on Intel NUC7i7BNH
 | model                     | load i7-7567U | generation i7 | load GeForce GTX 1070 | generation GTX 1070 |
 |:-------------------------:| -------------:| -------------:| ---------------------:| -------------------:|
-| gpt2                      | 2.05          | 7.22          | 9.05                  | 1.13                |
-| EleutherAI/gpt-neo-125M   | 1.7           | 6.86          | 9.75                  | 0.97                |
-| EleutherAI/gpt-neo-1.3B   | 19.6 1)       | 71.05         | 11.7                  | 5.03                |
-| EleutherAI/gpt-neo-2.7B   | 258.5         | 128.6         | -                     | -                   |
+| gpt2                      | 2.1s          | 7.22s         | 9.05s                 | 1.13s               |
+| EleutherAI/gpt-neo-125M   | 1.7s          | 6.86s         | 9.75s                 | 0.97s               |
+| EleutherAI/gpt-neo-1.3B   | 5.5s          | 71.05s        | 11.7s                 | 5.03s               |
+| EleutherAI/gpt-neo-2.7B   | 4min 15s      | 2min 8s       | -                     | -                   |
 | EleutherAI/gpt-j-6B       | -             | -             | -                     | -                   |
-
-1) STDEV was at 28
-
-#### Generation Requests on Intel NUC7i7BNH - Alt !!!
-| startup   | i7-7567U  | GeForce GTX 1070  | request       | gpustart |
-| ---------:| ---------:| -----------------:| ------------- | - |
-| 2.3 1.8   | 6.89 7.55 | 1.12 1.13         | text.json     | 9.1 9.0
-| 1.7 1.7   | 6.91 6.81 | 0.86 1.04 1.03    | text.json     | 9.6 9.9
-| 5.? 5.5   | 71.6 70.5 | 6.74 6.29 4.04 4. | text.json     | 11.9 11.5 11.6
-| 256.3 -1. | 128.56+.1 | -                 | text.json     |
-| -         | -         | -                 | -             |
 
 ## More Links
 https://towardsdatascience.com/how-you-can-use-gpt-j-9c4299dd8526
