@@ -26,14 +26,19 @@ Then run `python srvrest.py` and (from the same machine) `HTTP POST` something l
 </pre>
 to `http://localhost:49151`.
 
-(For convenience, on a machine with `sh`, `curl` and `jq` `./curljq.sh examples/text.json` might be used.)
+(For convenience, on a machine with `sh`, `curl` and `jq` installed `./curljq.sh examples/text.json` might be used.)
 
 ### Credits
 Based on ideas from https://www.thepythoncode.com/article/text-generation-with-transformers-in-python.
 
-### Details (TBD) 
+### Details (TBD)
+A few figures to compare
 
-...
+#### Generation Requests Intel NUC7i7BNH
+| cpu       | gpu               | model                     | request       |
+| i7-7567U  | GeForce GTX 1070  |                           |               |
+| ---------:| -----------------:|:-------------------------:| ------------- |
+| 7.4s      | 0.86s             | EleutherAI/gpt-neo-125M   | text.json     |
 
 ## More Links
 https://towardsdatascience.com/how-you-can-use-gpt-j-9c4299dd8526
