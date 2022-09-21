@@ -1,8 +1,9 @@
 {
     "text": "To be honest, neural networks",
     "do_sample": true,
+    "top_p": 100,
     "top_k": 50,
     "temperature": 0.6,
-    "max_len": 128,
+    "max_length": 128,
     "num_return_sequences": 3
 }
