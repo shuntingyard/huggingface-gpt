@@ -1,9 +1,11 @@
-import time
+import base64
 import os
+import time
+from typing import Union
 
 from dotenv import load_dotenv
 from fastapi import FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, validator
 from transformers import AutoModelForCausalLM, pipeline
 import uvicorn
 
@@ -23,6 +25,7 @@ model_to_load = [
     "EleutherAI/gpt-neo-2.7B",  # too memory intensive for my GTX 1070
     "EleutherAI/gpt-j-6B",
 ][SRVREST_MODEL]
+
 gpt_generator = None
 model = None
 
@@ -50,9 +53,13 @@ def load_model():
 
 
 def evaluate(args):
+    text = (
+        args.text.in_64 if isinstance(args.text, Decoded) else args.text.plain
+    )
+
     start = time.time()
     sentences = gpt_generator(
-        args.text,
+        text,
         do_sample=args.do_sample,
         top_p=args.top_p,
         top_k=args.top_k,
@@ -65,6 +72,21 @@ def evaluate(args):
         "s_elapsed": f"{time.time() - start:.2f}",
         "sentences": sentences,
     }
+
+
+class Plain(BaseModel):
+    plain: str
+
+
+class Decoded(BaseModel):
+    in_64: str
+
+    @validator("in_64")
+    def _(cls, encoded):
+        try:
+            return base64.b64decode(encoded).decode()
+        except Exception as e:
+            raise ValueError(f"Bad b64 encoding - {e}")
 
 
 class Input(BaseModel):
@@ -97,7 +119,7 @@ class Input(BaseModel):
             each element in the batch.
     """
 
-    text: str
+    text: Union[Plain, Decoded]
     do_sample: bool = False
     top_p: int = 100  # Seems to be of type int these days.
     top_k: int = 50
@@ -108,9 +130,8 @@ class Input(BaseModel):
 
 @app.post("/generate")
 async def generate(args: Input):
-    print(args)
     return evaluate(args)
 
 
 if __name__ == "__main__":
-    uvicorn.run("srvrest:app", host="localhost", port=49151)
+    uvicorn.run("srvrest:app", host="0.0.0.0", port=49151)

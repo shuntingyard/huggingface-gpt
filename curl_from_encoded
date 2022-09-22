@@ -1,0 +1,11 @@
+#!/bin/env sh
+
+# $1 must be a producer of json to be piped to curl.
+# (And included curl's -s for silence.)
+"$1" | curl -sX POST                            \
+    http://localhost:49151/generate             \
+    --header "Content-Type: application/json"   \
+    -d @-                                       \
+    | jq '.sentences[0].generated_text'         \
+    | sed -e 's/^"//' -e 's/"$//'               \
+    | sed -e 's/\\n/\n/g' -e 's/\\r/\r/g' -e 's/\\t/\t/g' -e 's/\\"/"/g'

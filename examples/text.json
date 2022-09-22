@@ -1,5 +1,5 @@
 {
-    "text": "To be honest, neural networks",
+    "text": { "plain": "When Konrad Adenauer was elected chancellor in" },
     "do_sample": true,
     "top_p": 100,
     "top_k": 50,
